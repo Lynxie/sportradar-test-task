@@ -1,0 +1,11 @@
+{
+    "name": "lynxie/sportradar-test-task",
+    "description": "Coding exercise for developer role",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "require": {}
+}
