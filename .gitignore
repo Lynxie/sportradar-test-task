@@ -1,2 +1,5 @@
 .idea
 src/vendor
+
+src/.phpunit.cache
+src/.phpunit.result.cache
