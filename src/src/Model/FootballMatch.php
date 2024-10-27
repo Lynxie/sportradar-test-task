@@ -61,6 +61,10 @@ class FootballMatch
 
     public function updateScore(int $homeScore, int $awayScore): void
     {
+        if ($homeScore < 0 || $awayScore < 0) {
+            throw new ScoreboardException('Team score must be 0 or greater');
+        }
+
         $this->homeScore = $homeScore;
         $this->awayScore = $awayScore;
     }
