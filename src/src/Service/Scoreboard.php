@@ -37,6 +37,12 @@ class Scoreboard
         return $match;
     }
 
+    public function updateScore(string $homeTeam, string $awayTeam, int $homeScore, int $awayScore): FootballMatch
+    {
+        // Update score of the match
+        return new FootballMatch($homeTeam, $awayTeam);
+    }
+
     /**
      * @return array|FootballMatch[]
      */

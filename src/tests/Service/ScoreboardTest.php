@@ -69,6 +69,23 @@ class ScoreboardTest extends TestCase
         $this->scoreboard->startNewMatch('Team C', 'Team A');
     }
 
+    public function testUpdateScoreSuccessfullyUpdatesMatchScore()
+    {
+        $match1 = $this->scoreboard->startNewMatch('Team A', 'Team B');
+        $match2 = $this->scoreboard->startNewMatch('Côte d’Ivoire', 'Congo, Republic of the');
+
+        $match1updated = $this->scoreboard->updateScore('Team A', 'Team B', 1, 0);
+        $match2updated = $this->scoreboard->updateScore('Côte d’Ivoire', 'Congo, Republic of the', 0, 1);
+
+        $this->assertSame($match1, $match1updated);
+        $this->assertSame($match2, $match2updated);
+
+        $this->assertEquals(1, $match1->getHomeScore());
+        $this->assertEquals(0, $match1->getAwayScore());
+        $this->assertEquals(0, $match2->getHomeTeam());
+        $this->assertEquals(1, $match2->getAwayTeam());
+    }
+
     public static function newMatchesProvider(): array
     {
         return [
