@@ -102,6 +102,17 @@ class ScoreboardTest extends TestCase
         $this->scoreboard->updateScore('Team A', 'Team B', $homeScore, $awayScore);
     }
 
+    public function testScoreCannotBeReduced(): void
+    {
+        // This check depends on business logic and may be redundant,
+        // as scores could be adjusted downward in cases of errors, goal cancellations, etc.
+        $this->scoreboard->startNewMatch('Team A', 'Team B');
+        $this->scoreboard->updateScore('Team A', 'Team B', 1, 0);
+        $this->scoreboard->updateScore('Team A', 'Team B', 2, 0);
+        $this->expectException(ScoreboardException::class);
+        $this->scoreboard->updateScore('Team A', 'Team B', 1, 0);
+    }
+
     public static function newMatchesProvider(): array
     {
         return [
