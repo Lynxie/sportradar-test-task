@@ -40,6 +40,9 @@ class Scoreboard
     public function updateScore(string $homeTeam, string $awayTeam, int $homeScore, int $awayScore): FootballMatch
     {
         $match = $this->findMatchForTeams($homeTeam, $awayTeam);
+        if ($match === null) {
+            throw new ScoreboardException('Match not found with the specified teams');
+        }
         $match->updateScore($homeScore, $awayScore);
 
         return $match;
