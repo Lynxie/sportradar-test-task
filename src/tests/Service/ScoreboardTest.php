@@ -61,6 +61,14 @@ class ScoreboardTest extends TestCase
         $this->scoreboard->startNewMatch($homeTeam, $awayTeam);
     }
 
+    public function testCannotStartMatchWhenTeamIsAlreadyPlaying(): void
+    {
+        $this->scoreboard->startNewMatch('Team A', 'Team B');
+
+        $this->expectException(ScoreboardException::class);
+        $this->scoreboard->startNewMatch('Team C', 'Team A');
+    }
+
     public static function newMatchesProvider(): array
     {
         return [
