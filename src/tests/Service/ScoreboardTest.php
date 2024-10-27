@@ -82,8 +82,8 @@ class ScoreboardTest extends TestCase
 
         $this->assertEquals(1, $match1->getHomeScore());
         $this->assertEquals(0, $match1->getAwayScore());
-        $this->assertEquals(0, $match2->getHomeTeam());
-        $this->assertEquals(1, $match2->getAwayTeam());
+        $this->assertEquals(0, $match2->getHomeScore());
+        $this->assertEquals(1, $match2->getAwayScore());
     }
 
     public static function newMatchesProvider(): array
