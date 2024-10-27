@@ -51,6 +51,16 @@ class ScoreboardTest extends TestCase
         $this->scoreboard->startNewMatch($homeTeam, $awayTeam);
     }
 
+    #[DataProvider('invalidTeamNameProvider')]
+    public function testCannotStartMatchWithInvalidTeamName(string $homeTeam, string $awayTeam): void
+    {
+        // Ensure valid name works
+        $this->scoreboard->startNewMatch('Team C', 'Team A');
+
+        $this->expectException(ScoreboardException::class);
+        $this->scoreboard->startNewMatch($homeTeam, $awayTeam);
+    }
+
     public static function newMatchesProvider(): array
     {
         return [
@@ -66,6 +76,15 @@ class ScoreboardTest extends TestCase
             'Same name' => ['Team A', 'Team A'],
             'Case sensitivity test' => ['TEAm A', 'Team A'],
             'Sanitizing test' => ['team a  ', ' Team A'],
+        ];
+    }
+
+    public static function invalidTeamNameProvider(): array
+    {
+        return [
+            'Empty home team name ' => ['', 'Team A'],
+            'Away team name consists of spaces only' => ['Team C', '   '],
+            'Both team names are invalid' => [' ', ''],
         ];
     }
 
