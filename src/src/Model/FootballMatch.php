@@ -59,6 +59,12 @@ class FootballMatch
 
     }
 
+    public function updateScore(int $homeScore, int $awayScore): void
+    {
+        $this->homeScore = $homeScore;
+        $this->awayScore = $awayScore;
+    }
+
     private function sanitizeTeamName(string $teamName): string
     {
         return trim($teamName);

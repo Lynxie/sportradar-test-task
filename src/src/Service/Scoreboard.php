@@ -39,8 +39,10 @@ class Scoreboard
 
     public function updateScore(string $homeTeam, string $awayTeam, int $homeScore, int $awayScore): FootballMatch
     {
-        // Update score of the match
-        return new FootballMatch($homeTeam, $awayTeam);
+        $match = $this->findMatchForTeams($homeTeam, $awayTeam);
+        $match->updateScore($homeScore, $awayScore);
+
+        return $match;
     }
 
     /**
@@ -49,6 +51,23 @@ class Scoreboard
     public function getActiveMatches(): array
     {
         return $this->matches;
+    }
+
+    private function findMatchForTeams(string $homeTeam, string $awayTeam): ?FootballMatch
+    {
+        $cleanHomeTeam = $this->getCleanTeamName($homeTeam);
+        $cleanAwayTeam = $this->getCleanTeamName($awayTeam);
+
+        foreach ($this->getActiveMatches() as $activeMatch) {
+            if (
+                $this->getCleanTeamName($activeMatch->getHomeTeam()) === $cleanHomeTeam &&
+                $this->getCleanTeamName($activeMatch->getAwayTeam()) === $cleanAwayTeam
+            ) {
+                return $activeMatch;
+            }
+        }
+
+        return null;
     }
 
     private function findTeamMatch(string $teamName): ?FootballMatch
