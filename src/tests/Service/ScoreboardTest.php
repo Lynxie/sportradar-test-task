@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
+use App\Exception\ScoreboardException;
 use App\Model\FootballMatch;
 use App\Service\Scoreboard;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -43,12 +44,28 @@ class ScoreboardTest extends TestCase
         $this->assertSame([$match1, $match2, $match3], $matches);
     }
 
+    #[DataProvider('sameTeamNameProvider')]
+    public function testCannotStartMatchWithSameTeam(string $homeTeam, string $awayTeam): void
+    {
+        $this->expectException(ScoreboardException::class);
+        $this->scoreboard->startNewMatch($homeTeam, $awayTeam);
+    }
+
     public static function newMatchesProvider(): array
     {
         return [
             ['Team A', 'Team B'],
             ['USA', 'Estonia'],
             ['Côte d\'Ivoire', 'São Tomé and Príncipe'],
+        ];
+    }
+
+    public static function sameTeamNameProvider(): array
+    {
+        return [
+            'Same name' => ['Team A', 'Team A'],
+            'Case sensitivity test' => ['TEAm A', 'Team A'],
+            'Sanitizing test' => ['team a  ', ' Team A'],
         ];
     }
 
