@@ -6,24 +6,35 @@ namespace App\Model;
 class FootballMatch
 {
 
-    public function getHomeTeam(): string
+    private int $homeScore = 0;
+    private int $awayScore = 0;
+
+    public function __construct(
+        private readonly string $homeTeam,
+        private readonly string $awayTeam,
+    )
     {
 
+    }
+
+    public function getHomeTeam(): string
+    {
+        return $this->homeTeam;
     }
 
     public function getAwayTeam(): string
     {
-
+        return $this->awayTeam;
     }
 
     public function getHomeScore(): int
     {
-
+        return $this->homeScore;
     }
 
     public function getAwayScore(): int
     {
-
+        return $this->awayScore;
     }
 
     public function getMatchStartDate(): \DateTimeImmutable

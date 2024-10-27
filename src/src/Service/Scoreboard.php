@@ -8,10 +8,15 @@ use App\Model\FootballMatch;
 class Scoreboard
 {
 
+    private array $matches = [];
+
     public function startNewMatch(string $homeTeam, string $awayTeam): FootballMatch
     {
         // Start a new match
-        return new FootballMatch();
+        $match = new FootballMatch($homeTeam, $awayTeam);
+        $this->matches[] = $match;
+
+        return $match;
     }
 
     /**
@@ -19,7 +24,7 @@ class Scoreboard
      */
     public function getActiveMatches(): array
     {
-        return [];
+        return $this->matches;
     }
 
 }
