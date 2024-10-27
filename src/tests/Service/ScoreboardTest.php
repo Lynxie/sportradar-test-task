@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
+use App\Model\FootballMatch;
 use App\Service\Scoreboard;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -29,6 +30,17 @@ class ScoreboardTest extends TestCase
 
         $matches = $this->scoreboard->getActiveMatches();
         $this->assertSame([$match], $matches);
+    }
+
+    public function testStartMultipleNewMatchesProvider(): void
+    {
+        $match1 = $this->scoreboard->startNewMatch('Team A', 'Team B');
+        $match2 = $this->scoreboard->startNewMatch('Team C', 'Team D');
+        $match3 = $this->scoreboard->startNewMatch('Team E', 'Team F');
+
+        $matches = $this->scoreboard->getActiveMatches();
+        $this->assertContainsOnlyInstancesOf(FootballMatch::class, $matches);
+        $this->assertSame([$match1, $match2, $match3], $matches);
     }
 
     public static function newMatchesProvider(): array
