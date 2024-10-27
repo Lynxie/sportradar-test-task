@@ -94,6 +94,14 @@ class ScoreboardTest extends TestCase
         $this->scoreboard->updateScore($requestedHomeTeam, $requestedAwayTeam, 1, 0);
     }
 
+    #[DataProvider('negativeScoreValuesProvider')]
+    public function testScoreCannotBeNegative(int $homeScore, int $awayScore): void
+    {
+        $this->scoreboard->startNewMatch('Team A', 'Team B');
+        $this->expectException(ScoreboardException::class);
+        $this->scoreboard->updateScore('Team A', 'Team B', $homeScore, $awayScore);
+    }
+
     public static function newMatchesProvider(): array
     {
         return [
@@ -128,6 +136,15 @@ class ScoreboardTest extends TestCase
             'Second team invalid' => ['USA', 'Estonia', 'USA', 'Latvia'],
             'Teams switched' => ['USA', 'Estonia', 'Estonia', 'USA'],
             'Both teams invalid' => ['USA', 'Estonia', 'Latvia', 'Croatia'],
+        ];
+    }
+
+    public static function negativeScoreValuesProvider(): array
+    {
+        return [
+            [-2, 5],
+            [1, -6],
+            [-100, -1],
         ];
     }
 
