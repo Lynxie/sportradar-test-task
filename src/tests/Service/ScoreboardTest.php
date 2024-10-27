@@ -86,6 +86,14 @@ class ScoreboardTest extends TestCase
         $this->assertEquals(1, $match2->getAwayScore());
     }
 
+    #[DataProvider('nonexistentMatchProvider')]
+    public function testUpdateScoreFailsForNonexistentMatch(string $homeTeam, string $awayTeam, string $requestedHomeTeam, string $requestedAwayTeam): void
+    {
+        $match = $this->scoreboard->startNewMatch($homeTeam, $awayTeam);
+        $this->expectException(ScoreboardException::class);
+        $this->scoreboard->updateScore($requestedHomeTeam, $requestedAwayTeam, 1, 0);
+    }
+
     public static function newMatchesProvider(): array
     {
         return [
@@ -110,6 +118,16 @@ class ScoreboardTest extends TestCase
             'Empty home team name ' => ['', 'Team A'],
             'Away team name consists of spaces only' => ['Team C', '   '],
             'Both team names are invalid' => [' ', ''],
+        ];
+    }
+
+    public static function nonexistentMatchProvider(): array
+    {
+        return [
+            'First team invalid' => ['USA', 'Estonia', 'Latvia', 'Estonia'],
+            'Second team invalid' => ['USA', 'Estonia', 'USA', 'Latvia'],
+            'Teams switched' => ['USA', 'Estonia', 'Estonia', 'USA'],
+            'Both teams invalid' => ['USA', 'Estonia', 'Latvia', 'Croatia'],
         ];
     }
 
