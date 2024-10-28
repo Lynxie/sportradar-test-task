@@ -51,6 +51,9 @@ class Scoreboard
     public function finishMatch(string $homeTeam, string $awayTeam): FootballMatch
     {
         $match = $this->findMatchForTeams($homeTeam, $awayTeam);
+        if ($match === null) {
+            throw new ScoreboardException('Cannot finish non-existing match');
+        }
         $this->deleteMatch($match);
 
         return $match;
