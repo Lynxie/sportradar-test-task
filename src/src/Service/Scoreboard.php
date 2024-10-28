@@ -50,7 +50,10 @@ class Scoreboard
 
     public function finishMatch(string $homeTeam, string $awayTeam): FootballMatch
     {
+        $match = $this->findMatchForTeams($homeTeam, $awayTeam);
+        $this->deleteMatch($match);
 
+        return $match;
     }
 
     /**
@@ -91,6 +94,15 @@ class Scoreboard
         }
 
         return null;
+    }
+
+    private function deleteMatch(FootballMatch $match): void
+    {
+        $matchIndex = array_search($match, $this->matches, true);
+        if ($matchIndex !== false) {
+            unset($this->matches[$matchIndex]);
+            $this->matches = array_values($this->matches); // rearranging array
+        }
     }
 
     private function getCleanTeamName(string $name): string
