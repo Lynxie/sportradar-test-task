@@ -48,6 +48,11 @@ class Scoreboard
         return $match;
     }
 
+    public function finishMatch(string $homeName, string $awayTeam): FootballMatch
+    {
+
+    }
+
     /**
      * @return array|FootballMatch[]
      */

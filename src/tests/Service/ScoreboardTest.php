@@ -113,6 +113,19 @@ class ScoreboardTest extends TestCase
         $this->scoreboard->updateScore('Team A', 'Team B', 1, 0);
     }
 
+    #[DataProvider('differentlyFormattedTeamNames')]
+    public function testCorrectMatchFinishesSuccessfully(string $homeTeam, string $awayTeam, string $formattedHomeTeam, string $formattedAwayTeam): void
+    {
+        $fillerMatch1 = $this->scoreboard->startNewMatch('Team A', 'Team B');
+        $match = $this->scoreboard->startNewMatch($homeTeam, $awayTeam);
+        $fillerMatch2 = $this->scoreboard->startNewMatch('Team C', 'Team D');
+        $this->assertCount(3, $this->scoreboard->getActiveMatches());
+
+        $finishedMatch = $this->scoreboard->finishMatch($formattedHomeTeam, $formattedAwayTeam);
+        $this->assertSame($match, $finishedMatch);
+        $this->assertSame([$fillerMatch1, $fillerMatch2], $this->scoreboard->getActiveMatches());
+    }
+
     public static function newMatchesProvider(): array
     {
         return [
@@ -156,6 +169,15 @@ class ScoreboardTest extends TestCase
             [-2, 5],
             [1, -6],
             [-100, -1],
+        ];
+    }
+
+    public static function differentlyFormattedTeamNames(): array
+    {
+        return [
+            'Same names' => ['USA', 'Estonia', 'USA', 'Estonia'],
+            'Different case names' => ['USA', 'Estonia', 'usa', 'estonia'],
+            'Extra spaces and invalid case' => ['USA', 'Estonia', '  usa', ' esTONIA   '],
         ];
     }
 
