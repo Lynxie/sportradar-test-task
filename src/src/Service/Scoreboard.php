@@ -60,6 +60,16 @@ class Scoreboard
     }
 
     /**
+     * Get sorted summary of the matches
+     *
+     * @return array|FootballMatch[]
+     */
+    public function getMatchesSummary(): array
+    {
+        return [];
+    }
+
+    /**
      * @return array|FootballMatch[]
      */
     public function getActiveMatches(): array

@@ -140,6 +140,21 @@ class ScoreboardTest extends TestCase
         $this->scoreboard->finishMatch('USA', 'Estonia');
     }
 
+    #[DataProvider('summarySortingDatasetProvider')]
+    public function testGetSummaryOfMatches(array $matches, array $expectedOrder): void
+    {
+        foreach ($matches as $matchArray) {
+            $this->scoreboard->startNewMatch($matchArray[0], $matchArray[1]);
+            $this->scoreboard->updateScore($matchArray[0], $matchArray[1], $matchArray[2], $matchArray[3]);
+        }
+
+        $actualOrder = array_map(function (FootballMatch $match) {
+            return [$match->getHomeTeam(), $match->getAwayTeam()];
+        }, $this->scoreboard->getMatchesSummary());
+
+        $this->assertEquals($expectedOrder, $actualOrder);
+    }
+
     public static function newMatchesProvider(): array
     {
         return [
@@ -192,6 +207,59 @@ class ScoreboardTest extends TestCase
             'Same names' => ['USA', 'Estonia', 'USA', 'Estonia'],
             'Different case names' => ['USA', 'Estonia', 'usa', 'estonia'],
             'Extra spaces and invalid case' => ['USA', 'Estonia', '  usa', ' esTONIA   '],
+        ];
+    }
+
+    public static function summarySortingDatasetProvider(): array
+    {
+        return [
+            'Empty dataset' => [
+                'matches' => [],
+                'expectedOrder' => [],
+            ],
+            'Sort by score test' => [
+                'matches' => [
+                    ['Team A', 'Team B', 1, 0, new \DateTimeImmutable('2010-01-28T15:00:00+02:00')],
+                    ['Team C', 'Team D', 3, 0, new \DateTimeImmutable('2010-01-28T15:00:00+02:00')],
+                    ['Team E', 'Team F', 0, 2, new \DateTimeImmutable('2010-01-28T15:00:00+02:00')],
+                ],
+                'expectedOrder' => [
+                    ['Team C', 'Team D'], ['Team E', 'Team F'], ['Team A', 'Team B'],
+                ]
+            ],
+            'Sort by time test' => [
+                'matches' => [
+                    ['Team A', 'Team B', 5, 0, new \DateTimeImmutable('2010-01-28T12:00:00+02:00')],
+                    ['Team C', 'Team D', 3, 2, new \DateTimeImmutable('2010-01-28T10:00:00+02:00')],
+                    ['Team E', 'Team F', 0, 5, new \DateTimeImmutable('2010-01-28T15:00:00+02:00')],
+                ],
+                'expectedOrder' => [
+                    ['Team E', 'Team F'], ['Team A', 'Team B'], ['Team C', 'Team D'],
+                ]
+            ],
+            'Sort by time in different timezones' => [
+                'matches' => [
+                    ['Team A', 'Team B', 1, 1, new \DateTimeImmutable('2010-01-28T10:00:00+03:00')],
+                    ['Team C', 'Team D', 2, 0, new \DateTimeImmutable('2010-01-28T10:00:00+02:00')],
+                    ['Team E', 'Team F', 0, 2, new \DateTimeImmutable('2010-01-28T10:00:00+04:00')],
+                ],
+                'expectedOrder' => [
+                    ['Team C', 'Team D'], ['Team A', 'Team B'], ['Team E', 'Team F'],
+                ]
+            ],
+            'Task dataset' => [
+                'matches' => [
+                    ['Mexico', 'Canada', 0, 5, new \DateTimeImmutable('2010-01-28T10:00:00+02:00')],
+                    ['Spain', 'Brazil', 10, 2, new \DateTimeImmutable('2010-01-28T11:00:00+02:00')],
+                    ['Germany', 'France', 2, 2, new \DateTimeImmutable('2010-01-28T12:00:00+02:00')],
+                    ['Uruguay', 'Italy', 6, 6, new \DateTimeImmutable('2010-01-28T13:00:00+02:00')],
+                    ['Argentina', 'Australia', 3, 1, new \DateTimeImmutable('2010-01-28T14:00:00+02:00')],
+                ],
+                'expectedOrder' => [
+                    ['Uruguay', 'Italy'], ['Spain', 'Brazil'], ['Mexico', 'Canada'],
+                    ['Argentina', 'Australia'], ['Germany', 'France'],
+                ]
+            ],
         ];
     }
 
