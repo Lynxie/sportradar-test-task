@@ -48,7 +48,7 @@ class Scoreboard
         return $match;
     }
 
-    public function finishMatch(string $homeName, string $awayTeam): FootballMatch
+    public function finishMatch(string $homeTeam, string $awayTeam): FootballMatch
     {
 
     }
