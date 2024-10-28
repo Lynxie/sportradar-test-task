@@ -5,6 +5,7 @@ namespace App\Tests\Service;
 
 use App\Exception\ScoreboardException;
 use App\Model\FootballMatch;
+use App\Service\Clock;
 use App\Service\Scoreboard;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -16,7 +17,8 @@ class ScoreboardTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->scoreboard = new Scoreboard();
+        $clock = new Clock();
+        $this->scoreboard = new Scoreboard($clock);
     }
 
     #[DataProvider('newMatchesProvider')]
@@ -143,14 +145,19 @@ class ScoreboardTest extends TestCase
     #[DataProvider('summarySortingDatasetProvider')]
     public function testGetSummaryOfMatches(array $matches, array $expectedOrder): void
     {
+        $clock = $this->createMock(Clock::class);
+        $scoreboard = new Scoreboard($clock);
+        $times = array_map(fn($matchArray) => $matchArray[4], $matches);
+        $clock->method('nowImmutable')->willReturnOnConsecutiveCalls(...$times);
+
         foreach ($matches as $matchArray) {
-            $this->scoreboard->startNewMatch($matchArray[0], $matchArray[1], $matchArray[4]);
-            $this->scoreboard->updateScore($matchArray[0], $matchArray[1], $matchArray[2], $matchArray[3]);
+            $scoreboard->startNewMatch($matchArray[0], $matchArray[1]);
+            $scoreboard->updateScore($matchArray[0], $matchArray[1], $matchArray[2], $matchArray[3]);
         }
 
         $actualOrder = array_map(function (FootballMatch $match) {
             return [$match->getHomeTeam(), $match->getAwayTeam()];
-        }, $this->scoreboard->getMatchesSummary());
+        }, $scoreboard->getMatchesSummary());
 
         $this->assertEquals($expectedOrder, $actualOrder);
     }

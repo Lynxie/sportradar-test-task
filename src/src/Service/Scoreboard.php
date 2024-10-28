@@ -9,16 +9,21 @@ use App\Model\FootballMatch;
 class Scoreboard
 {
 
+    public function __construct(
+        private readonly Clock $clock,
+    )
+    {
+    }
+
     private array $matches = [];
 
     /**
      * @param string $homeTeam
      * @param string $awayTeam
-     * @param \DateTimeImmutable|null $matchStartTime
      * @return FootballMatch - created match object
      * @throws ScoreboardException
      */
-    public function startNewMatch(string $homeTeam, string $awayTeam, ?\DateTimeImmutable $matchStartTime = null): FootballMatch
+    public function startNewMatch(string $homeTeam, string $awayTeam): FootballMatch
     {
         if ($this->getCleanTeamName($homeTeam) === $this->getCleanTeamName($awayTeam)) {
             throw new ScoreboardException('Home team and away team must be different');
@@ -32,8 +37,7 @@ class Scoreboard
             throw new ScoreboardException('Away team is currently in another match');
         }
 
-        $matchStartTime = $matchStartTime ?? new \DateTimeImmutable();
-        $match = new FootballMatch($homeTeam, $awayTeam, $matchStartTime);
+        $match = new FootballMatch($homeTeam, $awayTeam, $this->clock->nowImmutable());
         $this->matches[] = $match;
 
         return $match;
