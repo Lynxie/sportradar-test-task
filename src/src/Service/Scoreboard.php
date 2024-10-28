@@ -14,6 +14,7 @@ class Scoreboard
     /**
      * @param string $homeTeam
      * @param string $awayTeam
+     * @param \DateTimeImmutable|null $matchStartTime
      * @return FootballMatch - created match object
      * @throws ScoreboardException
      */
