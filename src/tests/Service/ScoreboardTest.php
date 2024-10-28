@@ -7,6 +7,7 @@ use App\Exception\ScoreboardException;
 use App\Model\FootballMatch;
 use App\Service\Clock;
 use App\Service\Scoreboard;
+use App\Service\Store\ArrayStore;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -18,7 +19,8 @@ class ScoreboardTest extends TestCase
     protected function setUp(): void
     {
         $clock = new Clock();
-        $this->scoreboard = new Scoreboard($clock);
+        $store = new ArrayStore();
+        $this->scoreboard = new Scoreboard($clock, $store);
     }
 
     #[DataProvider('newMatchesProvider')]
@@ -146,7 +148,8 @@ class ScoreboardTest extends TestCase
     public function testGetSummaryOfMatches(array $matches, array $expectedOrder): void
     {
         $clock = $this->createMock(Clock::class);
-        $scoreboard = new Scoreboard($clock);
+        $scoreboard = new Scoreboard($clock, new ArrayStore());
+
         $times = array_map(fn($matchArray) => $matchArray[4], $matches);
         $clock->method('nowImmutable')->willReturnOnConsecutiveCalls(...$times);
 

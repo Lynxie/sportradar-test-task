@@ -5,14 +5,14 @@ namespace App\Service;
 
 use App\Exception\ScoreboardException;
 use App\Model\FootballMatch;
+use App\Service\Store\StoreInterface;
 
 class Scoreboard
 {
 
-    private array $matches = [];
-
     public function __construct(
         private readonly Clock $clock,
+        private readonly StoreInterface $store,
     )
     {
     }
@@ -38,7 +38,7 @@ class Scoreboard
         }
 
         $match = new FootballMatch($homeTeam, $awayTeam, $this->clock->nowImmutable());
-        $this->matches[] = $match;
+        $this->store->storeMatch($match);
 
         return $match;
     }
@@ -60,7 +60,7 @@ class Scoreboard
         if ($match === null) {
             throw new ScoreboardException('Cannot finish non-existing match');
         }
-        $this->deleteMatch($match);
+        $this->store->deleteMatch($match);
 
         return $match;
     }
@@ -92,7 +92,7 @@ class Scoreboard
      */
     public function getActiveMatches(): array
     {
-        return $this->matches;
+        return $this->store->getMatches();
     }
 
     private function findMatchForTeams(string $homeTeam, string $awayTeam): ?FootballMatch
@@ -125,15 +125,6 @@ class Scoreboard
         }
 
         return null;
-    }
-
-    private function deleteMatch(FootballMatch $match): void
-    {
-        $matchIndex = array_search($match, $this->matches, true);
-        if ($matchIndex !== false) {
-            unset($this->matches[$matchIndex]);
-            $this->matches = array_values($this->matches); // rearranging array
-        }
     }
 
     private function getCleanTeamName(string $name): string
