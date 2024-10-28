@@ -126,6 +126,20 @@ class ScoreboardTest extends TestCase
         $this->assertSame([$fillerMatch1, $fillerMatch2], $this->scoreboard->getActiveMatches());
     }
 
+    public function testCannotFinishNonexistentMatch(): void
+    {
+        $this->expectException(ScoreboardException::class);
+        $this->scoreboard->finishMatch('USA', 'Estonia');
+    }
+
+    public function testCannotFinishNonexistentMatchInList(): void
+    {
+        $this->scoreboard->startNewMatch('Team A', 'Team B');
+        $this->scoreboard->startNewMatch('Team C', 'Team D');
+        $this->expectException(ScoreboardException::class);
+        $this->scoreboard->finishMatch('USA', 'Estonia');
+    }
+
     public static function newMatchesProvider(): array
     {
         return [
