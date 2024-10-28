@@ -1,6 +1,7 @@
 {
     "name": "lynxie/sportradar-test-task",
     "description": "Coding exercise for developer role",
+    "version": "1.0.0",
     "type": "library",
     "autoload": {
         "psr-4": {
@@ -15,7 +16,8 @@
     "require-dev": {
         "phpunit/phpunit": "^11"
     },
-  "require": {
-      "ext-mbstring": "*"
-  }
+    "require": {
+        "php": ">=8.2",
+        "ext-mbstring": "*"
+    }
 }
