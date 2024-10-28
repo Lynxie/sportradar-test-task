@@ -9,13 +9,13 @@ use App\Model\FootballMatch;
 class Scoreboard
 {
 
+    private array $matches = [];
+
     public function __construct(
         private readonly Clock $clock,
     )
     {
     }
-
-    private array $matches = [];
 
     /**
      * @param string $homeTeam
