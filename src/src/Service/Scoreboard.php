@@ -69,8 +69,8 @@ class Scoreboard
     {
         $matches = $this->getActiveMatches();
         usort($matches, function (FootballMatch $match1, FootballMatch $match2) {
-            $totalScore1 = $match1->getHomeScore() + $match1->getAwayScore();
-            $totalScore2 = $match2->getHomeScore() + $match2->getAwayScore();
+            $totalScore1 = $match1->getScoreSum();
+            $totalScore2 = $match2->getScoreSum();
 
             if ($totalScore1 !== $totalScore2) {
                 return $totalScore2 <=> $totalScore1;

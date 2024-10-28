@@ -76,6 +76,11 @@ class FootballMatch
         $this->awayScore = $awayScore;
     }
 
+    public function getScoreSum(): int
+    {
+        return $this->homeScore + $this->awayScore;
+    }
+
     private function sanitizeTeamName(string $teamName): string
     {
         return trim($teamName);
