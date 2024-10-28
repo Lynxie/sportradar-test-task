@@ -144,7 +144,7 @@ class ScoreboardTest extends TestCase
     public function testGetSummaryOfMatches(array $matches, array $expectedOrder): void
     {
         foreach ($matches as $matchArray) {
-            $this->scoreboard->startNewMatch($matchArray[0], $matchArray[1]);
+            $this->scoreboard->startNewMatch($matchArray[0], $matchArray[1], $matchArray[4]);
             $this->scoreboard->updateScore($matchArray[0], $matchArray[1], $matchArray[2], $matchArray[3]);
         }
 

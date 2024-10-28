@@ -17,7 +17,7 @@ class Scoreboard
      * @return FootballMatch - created match object
      * @throws ScoreboardException
      */
-    public function startNewMatch(string $homeTeam, string $awayTeam): FootballMatch
+    public function startNewMatch(string $homeTeam, string $awayTeam, ?\DateTimeImmutable $matchStartTime = null): FootballMatch
     {
         if ($this->getCleanTeamName($homeTeam) === $this->getCleanTeamName($awayTeam)) {
             throw new ScoreboardException('Home team and away team must be different');
@@ -31,7 +31,8 @@ class Scoreboard
             throw new ScoreboardException('Away team is currently in another match');
         }
 
-        $match = new FootballMatch($homeTeam, $awayTeam);
+        $matchStartTime = $matchStartTime ?? new \DateTimeImmutable();
+        $match = new FootballMatch($homeTeam, $awayTeam, $matchStartTime);
         $this->matches[] = $match;
 
         return $match;
@@ -66,7 +67,19 @@ class Scoreboard
      */
     public function getMatchesSummary(): array
     {
-        return [];
+        $matches = $this->getActiveMatches();
+        usort($matches, function (FootballMatch $match1, FootballMatch $match2) {
+            $totalScore1 = $match1->getHomeScore() + $match1->getAwayScore();
+            $totalScore2 = $match2->getHomeScore() + $match2->getAwayScore();
+
+            if ($totalScore1 !== $totalScore2) {
+                return $totalScore2 <=> $totalScore1;
+            }
+
+            return $match2->getMatchStartTime()->getTimestamp() <=> $match1->getMatchStartTime()->getTimestamp();
+        });
+
+        return $matches;
     }
 
     /**

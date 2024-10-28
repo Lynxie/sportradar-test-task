@@ -18,6 +18,7 @@ class FootballMatch
     public function __construct(
         string $homeTeam,
         string $awayTeam,
+        private readonly \DateTimeImmutable $matchStartTime,
     )
     {
         $homeTeam = $this->sanitizeTeamName($homeTeam);
@@ -55,9 +56,9 @@ class FootballMatch
         return $this->awayScore;
     }
 
-    public function getMatchStartDate(): \DateTimeImmutable
+    public function getMatchStartTime(): \DateTimeImmutable
     {
-
+        return $this->matchStartTime;
     }
 
     public function updateScore(int $homeScore, int $awayScore): void
